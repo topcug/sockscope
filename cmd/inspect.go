@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -94,10 +95,16 @@ func resolveTargetPIDs(opts inspectOpts) ([]int, error) {
 func inspectOne(pid int, output string) error {
 	ps, err := proc.ReadProcess(pid)
 	if err != nil {
+		if errors.Is(err, os.ErrPermission) {
+			return fmt.Errorf("permission denied — try: sudo sockscope inspect --pid %d", pid)
+		}
 		return err
 	}
 	sockets, err := proc.ReadSocketsForPID(pid)
 	if err != nil {
+		if errors.Is(err, os.ErrPermission) {
+			return fmt.Errorf("permission denied — try: sudo sockscope inspect --pid %d", pid)
+		}
 		return err
 	}
 	hints := triage.Hints(ps, sockets)

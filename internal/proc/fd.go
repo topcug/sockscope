@@ -1,6 +1,8 @@
 package proc
 
 import (
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -17,6 +19,9 @@ func SocketInodes(pid int) (map[string]struct{}, error) {
 	fdDir := filepath.Join(ProcRoot, strconv.Itoa(pid), "fd")
 	entries, err := os.ReadDir(fdDir)
 	if err != nil {
+		if errors.Is(err, os.ErrPermission) {
+			return nil, fmt.Errorf("permission denied reading %s — try running with sudo", fdDir)
+		}
 		return nil, err
 	}
 	inodes := make(map[string]struct{}, len(entries))
