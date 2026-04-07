@@ -88,11 +88,24 @@ echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 
 sockscope --version
-
-#sockscope version dev
+# sockscope version v0.1.2
 ```
 
 After that, `sockscope --version` should work from any directory, and every tool you install with `go install` in the future will too.
+
+#### Running as root
+
+Inspecting processes you don't own requires root. `sudo` typically strips your `PATH`, so the binary won't be found. The cleanest fix is to symlink it into `/usr/local/bin` once:
+
+```bash
+sudo ln -sf "$HOME/go/bin/sockscope" /usr/local/bin/sockscope
+```
+
+After that, `sudo sockscope inspect --pid <pid>` works normally. Alternatively, pass your current `PATH` inline without the symlink:
+
+```bash
+sudo env PATH="$PATH" sockscope inspect --pid <pid>
+```
 
 ### From source
 
@@ -106,7 +119,14 @@ sockscope --version
 
 ### Prebuilt binaries
 
-Prebuilt Linux tarballs will show up on the [releases page](https://github.com/topcug/sockscope/releases) once the first version is tagged. Until then, please use `go install` or build from source.
+Prebuilt Linux tarballs (amd64 and arm64) are available on the [releases page](https://github.com/topcug/sockscope/releases). Download, extract, and move the binary to somewhere on your `PATH`:
+
+```bash
+curl -LO https://github.com/topcug/sockscope/releases/latest/download/sockscope_linux_amd64.tar.gz
+tar -xzf sockscope_linux_amd64.tar.gz
+sudo mv sockscope /usr/local/bin/
+sockscope --version
+```
 
 ## Usage
 
