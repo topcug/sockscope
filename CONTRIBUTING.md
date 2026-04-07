@@ -1,20 +1,22 @@
 # Contributing to sockscope
 
-Thanks for your interest. `sockscope` aims to stay small and focused, so contributions that preserve that focus are the easiest to merge.
+Thanks for taking a look. Small fixes, bug reports, and PRs are all welcome.
 
-## Scope rule
+## Before you start on something big
 
-The v1 scope is deliberately narrow: **given a process, show its sockets and the first context needed for triage.** Before opening a PR that adds new features, please open an issue first so we can agree on whether it fits.
+`sockscope` is trying to stay small, so if you're planning a larger change it's usually a good idea to open an issue first. That way we can talk through whether it fits before you spend time on it.
 
-Things we are unlikely to accept in v1:
+A few things that probably won't land in v1, just so you know up front:
 
 - Packet capture
 - Web UIs or TUIs
 - Kubernetes API discovery
 - DNS reverse lookup enrichment
-- Live watch (planned for v2 via eBPF)
+- Live socket watching (that's planned for v2, on top of eBPF)
 
-## Development
+None of these are bad ideas — they're just outside what v1 is trying to do.
+
+## Getting set up
 
 ```bash
 git clone https://github.com/topcug/sockscope
@@ -23,14 +25,14 @@ go build ./...
 go test ./...
 ```
 
-`sockscope` targets Linux only. Parsers under `internal/proc` should be testable against fixtures in `test/fixtures`, not against the live `/proc` of the developer's machine.
+`sockscope` is Linux-only because everything it reads lives under `/proc`. When you're writing or changing parsers in `internal/proc`, please test them against fixtures in `test/fixtures` rather than whatever happens to be running on your laptop — it makes the tests reproducible for everyone else.
 
-## Style
+## A few style notes
 
-- Keep public surface small. If a function does not need to be exported, do not export it.
-- Comments explain _why_, not _what_.
-- No risk scores. Triage output uses "review" and "worth checking", never "suspicious" or "malicious".
+- Keep the public API small. If something doesn't need to be exported, leave it unexported.
+- Comments are more useful when they explain *why* a piece of code exists than when they restate *what* it does.
+- Please keep the triage output soft. Use words like "review" or "worth checking" rather than "suspicious" or "malicious", and don't add risk scores.
 
 ## Commit messages
 
-Conventional Commits are appreciated but not required. A clear one-line summary is enough.
+A clear one-line summary is enough. Conventional Commits are fine too if that's what you're used to, but they're not required.

@@ -5,7 +5,7 @@
 <h1 align="center">sockscope</h1>
 
 <p align="center">
-  <strong>One command to see what a Linux process is talking to — and what to check first.</strong>
+  A small CLI for looking at what a Linux process is actually talking to.
 </p>
 
 <p align="center">
@@ -18,13 +18,13 @@
 
 ---
 
-`sockscope` is a small CLI that helps engineers understand which sockets a process owns, where those connections go, and what to check first during runtime triage.
+`sockscope` shows you the sockets a process has open, where its connections are going, and a short list of things you might want to look at next. It's meant for those moments when something is behaving oddly on a box and you want a quick, honest picture of what that process is doing on the network.
 
 <p align="center">
   <img src="docs/demo.gif" alt="sockscope inspect demo" width="720" />
 </p>
 
-## First 30 seconds
+## Quick look
 
 ```bash
 # Install
@@ -53,22 +53,15 @@ Triage notes
   - IPC via UNIX socket present
 ```
 
-That's the whole product. One command, one screen, first context.
+## Why it exists
 
-## Why this exists
+When something looks off on a Linux box, you usually end up running `ss`, then `lsof`, then poking around in `/proc`, then checking which container the process belongs to — all to answer the same basic question: what is this thing talking to, and does any of it look wrong?
 
-During runtime triage, engineers hop between `ss`, `lsof`, `/proc`, container metadata, and process details just to answer one question: _what is this process talking to, and should I be worried?_
+`sockscope` does that walk for you and prints the result on one screen. It reads `/proc` directly, so there's no shelling out to `ss` or `lsof`, and the output is plain enough to paste into an incident note or a Slack message.
 
-`sockscope` collects that context into a single view. It reads `/proc` directly (no `ss` or `lsof` shell-outs), resolves the process, its sockets, its cgroup, and its container ID, and prints a small triage report you can paste into an incident note.
+## What it isn't
 
-## What it is not
-
-- Not a packet capture tool
-- Not a port scanner
-- Not a SIEM
-- Not a full eBPF observability platform
-
-It answers one narrow question well: **given a process, show its sockets and the first context needed for triage.**
+It's not a packet capture tool, a port scanner, a SIEM, or an eBPF observability platform. It doesn't replace any of those. It just gives you a quick first look at one process and its sockets, and leaves the deeper analysis to whichever tool you'd normally reach for next.
 
 ## Install
 
@@ -124,24 +117,26 @@ The JSON shape is stable within a major version: `{process, sockets, hints, gene
 
 ## Triage notes
 
-`sockscope` adds a small, deliberately low-confidence notes section at the end of every report. It uses words like _review_, _worth checking_, and _confirm_, never _suspicious_ or _malicious_. There are no risk scores.
+At the bottom of every report there's a short notes section. It's meant to point out things that are usually worth a second look — an external connection, a listening port, a UNIX socket, a process running as root — without making any claims about whether they're actually a problem.
 
-The goal is to highlight things that usually matter in a first look:
+The language is deliberately soft. You'll see words like "review" and "worth checking" rather than "suspicious" or "malicious", and there are no risk scores. The idea is to give you a nudge toward the next question, not to make the call for you.
+
+Things it will currently flag:
 
 - External outbound connections
 - Loopback-only communication
 - Listening sockets
 - UNIX socket IPC
-- Root-owned processes
+- Processes running as root
 - Interactive shells
 
 ## Roadmap
 
-- **v1** — `/proc`-based inspect by PID / name / container ID, with table, JSON and Markdown output
-- **v1.1** — Better container awareness, namespace detection, pod metadata
-- **v2** — Optional live watch (`sockscope watch`) built on eBPF, tracing `connect`, `accept`, `bind` and `close`
+- **v1** — `/proc`-based inspection by PID, name, or container ID, with table, JSON, and Markdown output.
+- **v1.1** — Better container awareness, namespace detection, and pod metadata.
+- **v2** — An optional `sockscope watch` built on eBPF, so you can follow `connect`, `accept`, `bind`, and `close` events as they happen.
 
-`watch` and `graph` are intentionally _not_ in v1. The whole point of v1 is the one-command first-look experience.
+`watch` and `graph` are left out of v1 on purpose. The first release is just about getting a clean one-shot view working well.
 
 ## Project
 

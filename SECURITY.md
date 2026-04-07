@@ -1,20 +1,22 @@
 # Security Policy
 
-## Reporting a vulnerability
+## Reporting something
 
-If you believe you have found a security issue in `sockscope`, please do **not** open a public GitHub issue. Instead, email the maintainers with:
+If you think you've found a security issue in `sockscope`, please don't open a public GitHub issue for it. Email the maintainers instead with:
 
-- A description of the issue
-- Steps to reproduce
-- The version of `sockscope` and the Linux distribution you are running
+- A short description of what's wrong
+- Steps to reproduce it
+- The version of `sockscope` and the Linux distribution you saw it on
 
-We will acknowledge the report within 72 hours and aim to provide a fix or mitigation within 14 days for confirmed issues.
+We'll try to reply within a few days, and for anything we can confirm we aim to have a fix or a workaround out within about two weeks.
 
-## Scope
+## What's in scope
 
-`sockscope` is a read-only tool. It reads `/proc` and does not open network sockets, modify state, or require elevated privileges beyond what `/proc` access already implies. Any behaviour that contradicts this is in scope for a security report.
+`sockscope` is a read-only tool. It reads `/proc`, doesn't open network sockets, doesn't change any system state, and doesn't need privileges beyond what `/proc` access already gives you. If you find something that doesn't match that description, we'd like to hear about it.
 
-## Out of scope
+## What's not
 
-- Issues that require an attacker to already have the same privileges as the target process
-- Information disclosed by `/proc` that is already visible to the invoking user through standard tools (`ps`, `ss`, `lsof`)
+A couple of things we don't consider security issues:
+
+- Problems that only show up when an attacker already has the same privileges as the target process.
+- Information that `/proc` already exposes to whoever is running `sockscope` — the same things you'd see from `ps`, `ss`, or `lsof`.

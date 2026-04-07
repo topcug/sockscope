@@ -1,7 +1,7 @@
 # Code of Conduct
 
-This project follows the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/) version 2.1.
+This project uses the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/), version 2.1.
 
-In short: be respectful, assume good faith, and keep discussion focused on the work. Harassment, personal attacks, and discriminatory language are not welcome and will be addressed by the maintainers.
+The short version: be kind, assume people mean well, and keep conversations focused on the work. Harassment, personal attacks, and discriminatory language aren't welcome here, and the maintainers will step in when they need to.
 
-To report a concern, contact the maintainers privately rather than opening a public issue.
+If something feels off and you'd rather not bring it up in public, please reach out to the maintainers directly instead of opening an issue.
