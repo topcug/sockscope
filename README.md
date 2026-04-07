@@ -31,8 +31,14 @@
 go install github.com/topcug/sockscope@latest
 export PATH="$HOME/go/bin:$PATH"   # if ~/go/bin isn't already on your PATH
 
-# Point it at any running process
-sockscope inspect --pid 1234
+# Find processes with open sockets
+sudo ss -tnp | awk 'NR>1 {print $NF}' | grep -oP 'pid=\K[0-9]+' | sort -u
+
+# Then point it at one
+sudo sockscope inspect --pid <pid>
+
+# Or look up by name directly
+sudo sockscope inspect --name sshd
 ```
 
 ```text
@@ -101,7 +107,9 @@ Inspecting processes you don't own requires root. `sudo` typically strips your `
 sudo ln -sf "$HOME/go/bin/sockscope" /usr/local/bin/sockscope
 ```
 
-After that, `sudo sockscope inspect --pid <pid>` works normally. Alternatively, pass your current `PATH` inline without the symlink:
+After that, `sudo sockscope inspect --pid <pid>` works normally. Alternatively, pass your current `PATH` inline without the symlink.
+
+You can find something with actual sockets with: `sudo ss -tlnp | head -20`
 
 ```bash
 sudo env PATH="$PATH" sockscope inspect --pid <pid>
