@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-07
+
+### Added
+- Socket summary block in table and markdown output: per-type counts (TCP/UDP/UNIX), external, loopback, abstract/named UNIX breakdown.
+- Mini ASCII bar chart in table output visualising socket type distribution.
+- Inode numbers shown per socket in table and markdown output.
+- `SocketMix` struct in the JSON output (`socket_mix` field) with all counts.
+
+### Changed
+- Triage notes are now numerical: "1 external TCP connection", "11 UNIX IPC socket(s) present".
+- UNIX socket hints now include the socket count.
+
+## [0.1.2] - 2026-04-07
+
+### Fixed
+- `sockscope --version` now shows the correct module version (e.g. `v0.1.2`) when installed via `go install` instead of `dev`.
+
 ## [0.1.1] - 2026-04-07
 
 ### Fixed

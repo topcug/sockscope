@@ -34,14 +34,29 @@ func Markdown(w io.Writer, r model.Report) error {
 	if len(r.Sockets) == 0 {
 		fmt.Fprintln(w, "_No sockets currently owned by this process._")
 	} else {
-		fmt.Fprintln(w, "| Kind | Local | Remote | State | Path |")
-		fmt.Fprintln(w, "|---|---|---|---|---|")
+		fmt.Fprintln(w, "| Kind | Local | Remote | State | Inode | Path |")
+		fmt.Fprintln(w, "|---|---|---|---|---|---|")
 		for _, s := range r.Sockets {
-			fmt.Fprintf(w, "| %s | %s | %s | %s | %s |\n",
-				s.Kind, s.LocalAddress, s.RemoteAddress, s.State, s.Path)
+			fmt.Fprintf(w, "| %s | %s | %s | %s | %s | %s |\n",
+				s.Kind, s.LocalAddress, s.RemoteAddress, s.State, s.Inode, s.Path)
 		}
 	}
 	fmt.Fprintln(w)
+
+	if len(r.Sockets) > 0 {
+		m := r.Mix
+		fmt.Fprintln(w, "## Socket summary")
+		fmt.Fprintln(w, "| Type | Count |")
+		fmt.Fprintln(w, "|---|---|")
+		fmt.Fprintf(w, "| TCP | %d |\n", m.TCP)
+		fmt.Fprintf(w, "| UDP | %d |\n", m.UDP)
+		fmt.Fprintf(w, "| UNIX | %d |\n", m.Unix)
+		fmt.Fprintf(w, "| External | %d |\n", m.External)
+		fmt.Fprintf(w, "| Loopback | %d |\n", m.Loopback)
+		fmt.Fprintf(w, "| Abstract/unnamed UNIX | %d |\n", m.Abstract)
+		fmt.Fprintf(w, "| Named UNIX | %d |\n", m.Named)
+		fmt.Fprintln(w)
+	}
 
 	if len(r.Hints) > 0 {
 		fmt.Fprintln(w, "## Triage notes")

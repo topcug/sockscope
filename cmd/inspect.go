@@ -112,6 +112,7 @@ func inspectOne(pid int, output string) error {
 	report := model.Report{
 		Process:     ps,
 		Sockets:     sockets,
+		Mix:         model.ComputeMix(sockets),
 		Hints:       hints,
 		GeneratedAt: time.Now().UTC(),
 	}

@@ -34,16 +34,43 @@ func Table(w io.Writer, r model.Report) error {
 	for _, s := range r.Sockets {
 		switch s.Kind {
 		case model.KindTCP:
-			fmt.Fprintf(w, "  TCP   %-22s -> %-22s %s\n", s.LocalAddress, s.RemoteAddress, s.State)
+			inode := ""
+			if s.Inode != "" {
+				inode = fmt.Sprintf(" [inode:%s]", s.Inode)
+			}
+			fmt.Fprintf(w, "  TCP   %-22s -> %-22s %s%s\n", s.LocalAddress, s.RemoteAddress, s.State, inode)
 		case model.KindUDP:
-			fmt.Fprintf(w, "  UDP   %-22s -> %s\n", s.LocalAddress, s.RemoteAddress)
+			inode := ""
+			if s.Inode != "" {
+				inode = fmt.Sprintf(" [inode:%s]", s.Inode)
+			}
+			fmt.Fprintf(w, "  UDP   %-22s -> %s%s\n", s.LocalAddress, s.RemoteAddress, inode)
 		case model.KindUnix:
 			path := s.Path
 			if path == "" {
 				path = "(abstract or unnamed)"
 			}
-			fmt.Fprintf(w, "  UNIX  %s\n", path)
+			inode := ""
+			if s.Inode != "" {
+				inode = fmt.Sprintf(" [inode:%s]", s.Inode)
+			}
+			fmt.Fprintf(w, "  UNIX  %s%s\n", path, inode)
 		}
+	}
+
+	if len(r.Sockets) > 0 {
+		fmt.Fprintln(w)
+		fmt.Fprintln(w, "Socket summary")
+		m := r.Mix
+		total := m.TCP + m.UDP + m.Unix
+		fmt.Fprintf(w, "  TCP   %s %d\n", miniBar(m.TCP, total, 12), m.TCP)
+		fmt.Fprintf(w, "  UDP   %s %d\n", miniBar(m.UDP, total, 12), m.UDP)
+		fmt.Fprintf(w, "  UNIX  %s %d\n", miniBar(m.Unix, total, 12), m.Unix)
+		fmt.Fprintln(w)
+		fmt.Fprintf(w, "  External:              %d\n", m.External)
+		fmt.Fprintf(w, "  Loopback:              %d\n", m.Loopback)
+		fmt.Fprintf(w, "  Abstract/unnamed UNIX: %d\n", m.Abstract)
+		fmt.Fprintf(w, "  Named UNIX:            %d\n", m.Named)
 	}
 
 	if len(r.Hints) > 0 {
@@ -54,6 +81,18 @@ func Table(w io.Writer, r model.Report) error {
 		}
 	}
 	return nil
+}
+
+// miniBar renders a small ASCII bar like [###......] scaled to width.
+func miniBar(val, total, width int) string {
+	if total == 0 || width == 0 {
+		return "[" + strings.Repeat(".", width) + "]"
+	}
+	filled := val * width / total
+	if filled == 0 && val > 0 {
+		filled = 1
+	}
+	return "[" + strings.Repeat("#", filled) + strings.Repeat(".", width-filled) + "]"
 }
 
 func firstWord(s string) string {

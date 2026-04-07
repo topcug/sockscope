@@ -50,6 +50,15 @@ func (s SocketSummary) IsListening() bool {
 	return s.Kind == KindTCP && s.State == "LISTEN"
 }
 
+// IsAbstract returns true for UNIX sockets in the abstract namespace
+// (path starts with '@') or unnamed sockets (empty path).
+func (s SocketSummary) IsAbstract() bool {
+	if s.Kind != KindUnix {
+		return false
+	}
+	return s.Path == "" || (len(s.Path) > 0 && s.Path[0] == '@')
+}
+
 func isLoopback(addr string) bool {
 	if addr == "" {
 		return false

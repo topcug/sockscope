@@ -94,7 +94,7 @@ echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 
 sockscope --version
-# sockscope version v0.1.2
+# sockscope version v0.2.0
 ```
 
 After that, `sockscope --version` should work from any directory, and every tool you install with `go install` in the future will too.
@@ -109,7 +109,7 @@ sudo ln -sf "$HOME/go/bin/sockscope" /usr/local/bin/sockscope
 
 After that, `sudo sockscope inspect --pid <pid>` works normally. Alternatively, pass your current `PATH` inline without the symlink.
 
-You can find something with actual sockets with: `sudo ss -tlnp | head -20`
+You can find something with actual sockets with: `sudo ss -tnp | awk 'NR>1 {print $NF}' | grep -oP 'pid=\K[0-9]+' | sort -u`
 
 ```bash
 sudo env PATH="$PATH" sockscope inspect --pid <pid>

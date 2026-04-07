@@ -49,9 +49,9 @@ func Hints(p model.ProcessSummary, sockets []model.SocketSummary) []string {
 	}
 
 	if len(externals) == 1 {
-		hints = append(hints, fmt.Sprintf("External connection present: review whether %s is an expected outbound destination", externals[0]))
+		hints = append(hints, fmt.Sprintf("1 external TCP connection: review whether %s is an expected outbound destination", externals[0]))
 	} else if len(externals) > 1 {
-		hints = append(hints, fmt.Sprintf("%d external connections present: review whether each destination is expected", len(externals)))
+		hints = append(hints, fmt.Sprintf("%d external TCP connections: review whether each destination is expected", len(externals)))
 	}
 
 	if loopbackOnly && len(sockets) > 0 {
@@ -62,8 +62,15 @@ func Hints(p model.ProcessSummary, sockets []model.SocketSummary) []string {
 		hints = append(hints, "Process is listening on one or more sockets: confirm exposure scope")
 	}
 
+	// Count UNIX sockets for a more informative hint
+	var unixCount int
+	for _, s := range sockets {
+		if s.Kind == model.KindUnix {
+			unixCount++
+		}
+	}
 	if hasUnix {
-		hints = append(hints, "IPC via UNIX socket present")
+		hints = append(hints, fmt.Sprintf("%d UNIX IPC socket(s) present", unixCount))
 	}
 
 	if p.UID == 0 {
