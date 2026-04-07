@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-## [0.1.0] - TBD
+## [0.1.1] - 2026-04-07
+
+### Fixed
+- Permission denied errors now show an actionable hint: `try: sudo sockscope inspect --pid <pid>`.
+
+## [0.1.0] - 2026-04-07
 
 ### Added
 - Initial release.
@@ -20,5 +25,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Apache-2.0 license, `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`.
 - GitHub Actions CI (build, vet, test, golangci-lint) and release workflow via GoReleaser.
 
-[Unreleased]: https://github.com/topcug/sockscope/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/topcug/sockscope/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/topcug/sockscope/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/topcug/sockscope/releases/tag/v0.1.0
