@@ -27,8 +27,9 @@
 ## Quick look
 
 ```bash
-# Install
+# Install (requires Go 1.23+)
 go install github.com/topcug/sockscope@latest
+export PATH="$HOME/go/bin:$PATH"   # if ~/go/bin isn't already on your PATH
 
 # Point it at any running process
 sockscope inspect --pid 1234
@@ -65,31 +66,47 @@ It's not a packet capture tool, a port scanner, a SIEM, or an eBPF observability
 
 ## Install
 
-Requires Linux. `/proc` is the data source, so macOS and Windows are not supported.
+`sockscope` is Linux-only — it reads everything it needs from `/proc`, so it doesn't run on macOS or Windows.
 
-**With Go:**
+### With `go install` (recommended for now)
+
+If you have a Go toolchain (1.23 or newer):
 
 ```bash
 go install github.com/topcug/sockscope@latest
 ```
 
-**From a release archive:**
-
-Download the latest `sockscope_<version>_linux_<arch>.tar.gz` from the [releases page](https://github.com/topcug/sockscope/releases), then:
+One thing to know: `go install` drops the binary in `$(go env GOPATH)/bin`, which is `~/go/bin` on most setups. That directory is **not** on your `PATH` by default on most Linux distributions, so right after installing you'll probably get `sockscope: command not found`. To fix it, add `~/go/bin` to your shell's startup file once:
 
 ```bash
-tar -xzf sockscope_*.tar.gz
-sudo mv sockscope /usr/local/bin/
+# bash
+echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# zsh
+echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+
 sockscope --version
+
+#sockscope version dev
 ```
 
-**From source:**
+After that, `sockscope --version` should work from any directory, and every tool you install with `go install` in the future will too.
+
+### From source
 
 ```bash
 git clone https://github.com/topcug/sockscope
 cd sockscope
 go build -o sockscope .
+sudo mv sockscope /usr/local/bin/
+sockscope --version
 ```
+
+### Prebuilt binaries
+
+Prebuilt Linux tarballs will show up on the [releases page](https://github.com/topcug/sockscope/releases) once the first version is tagged. Until then, please use `go install` or build from source.
 
 ## Usage
 

@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/topcug/sockscope/pkg/version"
 	"github.com/spf13/cobra"
+	"github.com/topcug/sockscope/pkg/version"
 )
 
 // NewRootCmd builds the top-level `sockscope` command. The root

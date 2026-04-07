@@ -5,11 +5,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/spf13/cobra"
 	"github.com/topcug/sockscope/internal/model"
 	"github.com/topcug/sockscope/internal/proc"
 	"github.com/topcug/sockscope/internal/render"
 	"github.com/topcug/sockscope/internal/triage"
-	"github.com/spf13/cobra"
 )
 
 type inspectOpts struct {
@@ -30,7 +30,7 @@ its open TCP, UDP and UNIX sockets from /proc, and prints a small
 triage report.
 
 Exactly one of --pid, --name or --container-id must be provided.`,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return runInspect(opts)
 		},
 	}
